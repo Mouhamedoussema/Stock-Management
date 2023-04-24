@@ -1,37 +1,18 @@
-<?php 
-  session_start(); 
+<?php
+
+include "database.php";
+session_start();
+if (!isset($_SESSION["user"])) {
+    header("Location: login.php");
+}
 
 
-  if($_SESSION["username"]) {echo $_SESSION['username'];}
-
-  if (!isset($_SESSION['username'])) {
-
-
-  	$_SESSION['msg'] = "You must log in first";
-  	header('location: Login.php');
-  }
-  if (isset($_GET['logout'])) {
-  	session_destroy();
-  	unset($_SESSION['username']);
-  	header("location: Login.php");
-  }
-
-  
- 
-
-  
- 
 ?>
-
-  
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title>LEONI - Gestion de stock - IT </title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -57,12 +38,11 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    
 </head>
 
 <body>
-
-		
-</body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -71,45 +51,40 @@
             </div>
         </div>
         <!-- Spinner End -->
-
-
-        <!-- Sidebar Start -->
+<!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.php" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa  me-4"></i>LEONI</h3>
+                    <h3 class="text-primary">LEONI</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
                         <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
-                    
                     <div class="ms-3">
-                        <h6 class="mb-0">Jhon Doe</h6>
+                         
+                        <h6 class="mb-0"><?php   echo $_SESSION["username"]   ?></h6>
+
+                        
                         <span>Admin</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="index.php" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="users.php" class="nav-item nav-link"><i class="fas fa-users"></i></i>Users</a>
+                    <a href="users.php" class="nav-item nav-link "><i class="fas fa-users"></i></i>Users</a>
                     <a href="Categories.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Categories</a>
                     <a href="Articles.php" class="nav-item nav-link"><i class="fas fa-boxes"></i>Articles</a>
                     <a href="demandes.php" class="nav-item nav-link"><i class="fas fa-clipboard-list"></i>Demandes</a>
                     <div class="nav-item dropdown">
-                        
-                            
                         </div>
                     </div>
                 </div>
             </nav>
         </div>
         <!-- Sidebar End -->
-
-
-        <!-- Content Start -->
         <div class="content">
-            <!-- Navbar Start -->
+<!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
@@ -122,19 +97,16 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                       
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item"></a>   
-                           
                             <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item"></a>  
                         </div>
-
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Notificatin</span>
+                            <span class="d-none d-lg-inline-flex">Notification</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">
@@ -170,7 +142,22 @@
             </nav>
             <!-- Navbar End -->
 
+
+
             
+           <!-- Footer Start -->
+           <div class="container-fluid pt-4 px-4">
+                <div class="bg-light rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            &copy; <a href="#">Med oussema Mahjoub</a>, All Right Reserved. 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
+
+
 
            
     <!-- JavaScript Libraries -->
@@ -184,8 +171,11 @@
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
+    <script src="custom.js"></script>
+
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
 
 </html>
+

@@ -5,6 +5,10 @@
     --dark: #191C24;
 }
 
+.table {
+    table-layout: fixed;
+  }
+
 .back-to-top {
     position: fixed;
     display: none;
@@ -228,6 +232,7 @@
 
 .bootstrap-datetimepicker-widget .table th {
     font-weight: 500;
+    color: black;
 }
 
 .bootstrap-datetimepicker-widget.dropdown-menu {

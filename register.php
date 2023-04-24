@@ -1,4 +1,12 @@
-<?php include('server.php') ?>
+
+
+ <?php
+ /*
+session_start();
+if (isset($_SESSION["user"])) {
+    header("Location: index.php");
+} */
+?>  
 
 
 <!DOCTYPE html>
@@ -51,56 +59,103 @@
                 <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
                     <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="index.html" class="">
-                                <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>LEONI</h3>
+                            <a href="index.php" class="">
+                                <h3 class="text-primary">LEONI</h3>
                             </a>
                             <h3>Sign Up</h3>
                         </div>
+
+                        <?php 
+        if (isset($_POST['submit'])) {
+            $matricule = $_POST['id'];
+            $fullname = $_POST['username'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $pass = $_POST['password_1'];
+            $repass = $_POST['password_2'];
+
+            $password_hashage = password_hash($pass,  PASSWORD_DEFAULT ); 
+            $errors = array();
+
+            if (empty($matricule) OR empty($fullname) OR empty($email) OR empty($phone) OR empty($pass) OR empty($repass)) {
+                array_push($errors, "All fields are required");
+            }
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+               array_push($errors, "Email is Invalid"); 
+            }
+            
+            if (strlen($pass)<8) {
+                array_push($errors, "Password must be at least 8 caracters"); 
+             }
+
+            if ($pass !== $repass) {
+                array_push($errors, "Password does not match");
+            }
+            require_once("database.php");
+            $sql = "SELECT * FROM users WHERE email = '$email'";
+            $result = mysqli_query($conn, $sql);
+            $rowCount = mysqli_num_rows($result);
+            if ($rowCount>0) {
+              array_push($errors, "Email already exist");
+            }
+
+            if (count($errors)>0) {
+                foreach ($errors as $error) {
+                    echo "<div class='alert alert-danger'>$error</div>";
+                }
+            }else {
+                
+                $sql = "INSERT INTO users (Matricule, username, email, phone, password) VALUES ( ? , ? , ? , ? , ? )";
+               $stmt = mysqli_stmt_init($conn);
+                $prepareStmt = mysqli_stmt_prepare($stmt, $sql);
+                
+                if($prepareStmt){
+                    mysqli_stmt_bind_param($stmt, "issis", $matricule, $fullname, $email, $phone, $password_hashage);
+                    mysqli_stmt_execute($stmt);
+                    
+                    echo "<div class='alert alert-success'>You are registered successfuly.</div>";
+                }else {
+                    die("Something went wrong§§§§§");
+                } 
+            }
+        }
+
+
+        ?>
                         <form method="post" action="register.php">
-  	                    <?php include('errors.php'); ?>
+  	                    
 
                           <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="floatingText" name="id">
-                            <label for="floatingText" >id</label>
+                            <input type="number" class="form-control" id="floatingText" name="id" autocomplete="off" required>
+                            <label for="floatingText" >Matricule</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingText" name="username" value="<?php echo $username; ?>">
+                            <input type="text" class="form-control" id="floatingText" name="username" autocomplete="off" required >
                             <label for="floatingText">Username</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="floatingInput" name="email" value="<?php echo $email; ?>">
+                            <input type="email" class="form-control" id="floatingInput" name="email" autocomplete="off" required >
                             <label for="floatingInput">Email address</label>
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="floatingInput" name="phone">
+                            <input type="number" class="form-control" id="floatingInput" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" autocomplete="off" required>
                             <label for="floatingInput">Phone</label>
                         </div>
 
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="floatingPassword" name="password_1" >
+                            <input type="password" class="form-control" id="floatingPassword" name="password_1" autocomplete="off" required >
                             <label for="floatingPassword">Password</label>
                         </div>
 
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="floatingPassword" name="password_2" >
+                            <input type="password" class="form-control" id="floatingPassword" name="password_2" autocomplete="off" required >
                             <label for="floatingPassword">Re-Password</label>
                         </div>
-
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
-
-                            <a href="">Forgot Password</a>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4" name="register">Sign Up</button>
-
+                        <button type="submit" class="btn btn-primary py-3 w-100 mb-4" name="submit">Sign Up</button>
                         <p class="text-center mb-0">Already have an Account? <a href="Login.php">Sign In</a></p>
                         </form>
                     </div>
